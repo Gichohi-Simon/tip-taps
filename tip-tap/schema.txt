@@ -1,0 +1,66 @@
+how the output looks like
+
+{
+  "type": "doc",
+  "content": [
+    { "type": "heading", "attrs": { "level": 2 }, "content": [{ "type": "text", "text": "Hello World" }] },
+    { "type": "paragraph", "content": [
+        { "type": "text", "text": "This is " },
+        { "type": "text", "marks": [{ "type": "bold" }], "text": "bold" },
+        { "type": "text", "text": " text with a " },
+        { "type": "text", "marks": [{ "type": "link", "attrs": { "href": "https://example.com" } }], "text": "link" },
+        { "type": "text", "text": "." }
+      ]
+    },
+    { "type": "codeBlock", "attrs": { "language": "javascript" }, "content": [
+        { "type": "text", "text": "console.log(\"hi\")" }
+      ]
+    },
+    { "type": "image", "attrs": { "src": "https://mycdn.com/uploads/image.png" } }
+  ]
+}
+
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   Json     // Tiptap JSON
+  html      String   // Rendered HTML
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  String?
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    String
+  content   Json     // Tiptap JSON
+  html      String   // Rendered HTML
+  createdAt DateTime @default(now())
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  String?
+}
+
+
+// real life function:
+
+const [editorData, setEditorData] = useState<EditorData | null>(null);
+
+  const handleSave = async () => {
+    if (!editorData) return;
+
+    try {
+      const res = await fetch("/api/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editorData),
+      });
+
+      const data = await res.json();
+      console.log("✅ Saved successfully:", data);
+    } catch (error) {
+      console.error("❌ Error saving post:", error);
+    }
+  };
