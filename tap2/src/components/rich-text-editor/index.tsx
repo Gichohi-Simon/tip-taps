@@ -9,13 +9,19 @@ import Highlight from "@tiptap/extension-highlight";
 
 interface RichTextEditorProps {
   content: string;
-  onChange: (content: string) => void;
+  onChange?: (content: string) => void;
+  editable?: boolean;
 }
+
 export default function RichTextEditor({
   content,
   onChange,
+  editable,
 }: RichTextEditorProps) {
+  const isEditable = editable ?? true;
+
   const editor = useEditor({
+    editable: isEditable,
     extensions: [
       StarterKit.configure({
         bulletList: {
@@ -37,19 +43,19 @@ export default function RichTextEditor({
     content: content,
     editorProps: {
       attributes: {
-        class: "min-h-[156px] border rounded-md bg-slate-50 py-2 px-3",
+        class: isEditable ?  "min-h-[156px] border rounded-md bg-slate-50 py-2 px-3" : "",
       },
     },
     onUpdate: ({ editor }) => {
       // console.log(editor.getHTML());
-      onChange(editor.getHTML());
+      if (onChange) onChange(editor.getHTML());
     },
-    immediatelyRender:false
+    immediatelyRender: false,
   });
 
   return (
     <div>
-      <MenuBar editor={editor} />
+      {isEditable && <MenuBar editor={editor} />}
       <EditorContent editor={editor} />
     </div>
   );

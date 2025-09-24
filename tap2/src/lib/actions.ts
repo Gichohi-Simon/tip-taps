@@ -2,6 +2,7 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { CreatePostInput } from "./types";
+
 import prisma from "./db";
 
 export async function createPost(data: CreatePostInput) {
@@ -27,12 +28,36 @@ export async function createPost(data: CreatePostInput) {
       success: true,
       data: post,
     };
-
   } catch (error) {
-    console.log('Error creating post:',error);
+    console.log("Error creating post:", error);
     return {
-        success:false,
-        message:"failed to create post"
+      success: false,
+      message: "failed to create post",
+    };
+  }
+}
+
+export async function getPostById(postId: string) {
+  try {
+    const post = await prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+      include: {
+        author: true,
+      },
+    });
+
+    if (!post) {
+      return {
+        success: false,
+        message: "Post not found",
+      };
     }
+
+    return { success: true, data: post };
+  } catch (error) {
+    console.log("Database errror:", error);
+    return null
   }
 }

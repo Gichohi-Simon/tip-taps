@@ -17,9 +17,9 @@ export interface User {
 export interface PostInterface {
   id: string;
   title: string;
-  content: string; // stored as HTML string from your editor
+  content: string; 
   authorId: string;
   createdAt: Date;
   updatedAt: Date;
-  author: User; // nested relationship
+  author: User; 
 };
