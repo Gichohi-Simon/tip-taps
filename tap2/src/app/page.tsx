@@ -4,8 +4,19 @@ import BlogPostList from "@/components/ui/blog-post-list";
 import Container from "@/components/container";
 
 export default async function Home() {
+  const posts = await prisma.post.findMany({
+    orderBy:{
+      createdAt:"desc"
+    },
+    include:{
+      author:true
+    }
+  });
+  console.log(posts)
+
   const users = await prisma.user.findMany();
   console.log(users);
+
   return (
     <Container>
       <div className="mb-8">
@@ -14,7 +25,9 @@ export default async function Home() {
           Explore the latest articles and insights
         </p>
       </div>
-      <BlogPostList />
+      <BlogPostList 
+        posts={posts}
+      />
     </Container>
   );
 }

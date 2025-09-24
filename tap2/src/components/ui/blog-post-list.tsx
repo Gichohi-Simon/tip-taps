@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React from "react";
-import { posts } from "@/lib/mock-data";
 import {
   Card,
   CardContent,
@@ -9,11 +8,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
+import { PostInterface } from "@/lib/types";
 
 // used to remove html tags.
 import DOMPurify from 'isomorphic-dompurify';
 
-export default function BlogPostList() {
+type BlogPost =  {
+  posts:PostInterface[]
+}
+
+export default function BlogPostList({posts}:BlogPost) {
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {posts.map((post) => (
