@@ -117,51 +117,50 @@ export async function updatePost(postId: string, data: CreatePostInput) {
     const { userId } = await auth();
 
     if (!userId) {
-      return { 
+      return {
         success: false,
         message: "Unauthorized",
       };
     }
 
     const post = await prisma.post.findUnique({
-      where:{
-        id:postId
+      where: {
+        id: postId,
       },
-      select:{
-        authorId:true
-      }
-    })
+      select: {
+        authorId: true,
+      },
+    });
 
-    if(!post){
+    if (!post) {
       return {
-        success:false,
-        message:"post not found"
-      }
+        success: false,
+        message: "post not found",
+      };
     }
 
-    if(post.authorId !== userId){
+    if (post.authorId !== userId) {
       return {
-        success:false,
-        message:"you don't have permission to edit this post"
-      }
+        success: false,
+        message: "you don't have permission to edit this post",
+      };
     }
 
     const updatedPost = await prisma.post.update({
-      where:{
-        id:postId
+      where: {
+        id: postId,
       },
-      data:{
-        title:data.title,
-        content:data.content,
-        updatedAt: new Date()
-      }
+      data: {
+        title: data.title,
+        content: data.content,
+        updatedAt: new Date(),
+      },
     });
 
     return {
       success: true,
       data: updatedPost,
     };
-
   } catch (error) {
     console.log("Error updating post:", error);
     return {

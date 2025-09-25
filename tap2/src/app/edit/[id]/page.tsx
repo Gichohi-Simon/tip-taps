@@ -3,10 +3,10 @@
 import Container from "@/components/container";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label"; 
+import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import React, { FormEvent, useEffect, useState} from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import RichTextEditor from "@/components/rich-text-editor";
 import { getPostForEdit, updatePost } from "@/lib/actions";
 import { useAuth } from "@clerk/nextjs";
@@ -17,8 +17,8 @@ export default function EditPostPage() {
   const router = useRouter();
 
   // getting params in a client component
-  const params = useParams()
-  const id = params.id as string
+  const params = useParams();
+  const id = params.id as string;
 
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
@@ -27,36 +27,36 @@ export default function EditPostPage() {
   const { userId, isLoaded, isSignedIn } = useAuth();
 
   useEffect(() => {
-   const fetchPost = async() => {
-    if(!isSignedIn){
+    const fetchPost = async () => {
+      if (!isSignedIn) {
         return;
-    }
+      }
 
-    try {
-     const post = await getPostForEdit(id)
+      try {
+        const post = await getPostForEdit(id);
 
-     if(post.success){
-        setTitle(post.data?.title ?? "")
-        console.log("fetched content :",post.data?.content);
-        setContent(post.data?.content ?? "");
-     }
-
-    } catch (error) {
+        if (post.success) {
+          setTitle(post.data?.title ?? "");
+          console.log("fetched content :", post.data?.content);
+          setContent(post.data?.content ?? "");
+        }
+      } catch (error) {
         console.error("Failed to fetch post: ", error);
-    }finally{
-        setIsLoading(false)
-    }}
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-   if(isLoaded){
-    fetchPost();
-   }
+    if (isLoaded) {
+      fetchPost();
+    }
   }, [isLoaded, isSignedIn, id]);
 
   if (!isLoaded || isLoading) {
     return (
-        <div className="container mx-auto py-10 px-4 flex justify-center">
-            <div>Loading...</div>
-        </div>
+      <div className="container mx-auto py-10 px-4 flex justify-center">
+        <div>Loading...</div>
+      </div>
     );
   }
 
@@ -68,7 +68,7 @@ export default function EditPostPage() {
       if (!userId) {
         throw new Error("User is not authenticated");
       }
-      const result = await updatePost(id, {title, content});
+      const result = await updatePost(id, { title, content });
       if (result?.success) {
         toast("Post updated succesfully");
         router.push("/");
@@ -77,7 +77,7 @@ export default function EditPostPage() {
       }
     } catch (error) {
       console.error("Failed to create post", error);
-      toast("Failed to fetch post")
+      toast("Failed to fetch post");
     } finally {
       setIsSubmitting(false);
     }
@@ -108,7 +108,10 @@ export default function EditPostPage() {
         </div>
         <div className="space-y-2">
           <Label htmlFor="content">Content</Label>
-          <RichTextEditor content={content} onChange={(html) => setContent(html)} />
+          <RichTextEditor
+            content={content}
+            onChange={(html) => setContent(html)}
+          />
         </div>
 
         <Button type="submit" disabled={isSubmitting}>

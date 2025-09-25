@@ -12,14 +12,14 @@ export interface User {
   profileImage: string | null;
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
 export interface PostInterface {
   id: string;
   title: string;
-  content: string; 
+  content: string;
   authorId: string;
   createdAt: Date;
   updatedAt: Date;
-  author: User; 
-};
+  author: User;
+}
