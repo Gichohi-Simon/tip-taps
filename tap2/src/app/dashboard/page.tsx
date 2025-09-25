@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card";
 import DOMPurify from "isomorphic-dompurify";
 import { formatDate } from "@/lib/utils";
+import DeletePostButton from "@/components/delete-post-button";
 
 export default async function DashboardPage() {
   const { userId } = await auth();
@@ -93,6 +94,7 @@ export default async function DashboardPage() {
                       Edit
                     </Button>
                   </Link>
+                  <DeletePostButton id={post.id} />
                 </div>
               </CardFooter>
             </Card>

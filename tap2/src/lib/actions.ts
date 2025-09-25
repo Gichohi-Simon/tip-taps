@@ -169,3 +169,56 @@ export async function updatePost(postId: string, data: CreatePostInput) {
     };
   }
 }
+
+export async function deletePost(postId: string) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return {
+        success: false,
+        message: "Unauthorized",
+      };
+    }
+
+    const post = await prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+      select: {
+        authorId: true,
+      },
+    });
+
+    if (!post) {
+      return {
+        success: false,
+        message: "post not found",
+      };
+    }
+
+    if (post.authorId !== userId) {
+      return {
+        success: false,
+        message: "you don't have permission to edit this post",
+      };
+    }
+
+    const deletedPost = await prisma.post.delete({
+      where: {
+        id: postId,
+      },
+    });
+
+    return {
+      success: true,
+      data: deletedPost,
+    };
+  } catch (error) {
+    console.log("Error deleting post:", error);
+    return {
+      success: false,
+      message: "failed to delete post",
+    };
+  }
+}

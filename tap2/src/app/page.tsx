@@ -5,14 +5,14 @@ import Container from "@/components/container";
 
 export default async function Home() {
   const posts = await prisma.post.findMany({
-    orderBy:{
-      createdAt:"desc"
+    orderBy: {
+      createdAt: "desc",
     },
-    include:{
-      author:true
-    }
+    include: {
+      author: true,
+    },
   });
-  console.log(posts)
+  console.log(posts);
 
   const users = await prisma.user.findMany();
   console.log(users);
@@ -25,9 +25,7 @@ export default async function Home() {
           Explore the latest articles and insights
         </p>
       </div>
-      <BlogPostList 
-        posts={posts}
-      />
+      <BlogPostList posts={posts} />
     </Container>
   );
 }

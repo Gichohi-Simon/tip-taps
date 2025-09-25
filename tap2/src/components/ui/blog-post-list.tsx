@@ -11,34 +11,34 @@ import { formatDate } from "@/lib/utils";
 import { PostInterface } from "@/lib/types";
 
 // used to remove html tags.
-import DOMPurify from 'isomorphic-dompurify';
+import DOMPurify from "isomorphic-dompurify";
 
-type BlogPost =  {
-  posts:PostInterface[]
-}
+type BlogPost = {
+  posts: PostInterface[];
+};
 
-export default function BlogPostList({posts}:BlogPost) {
+export default function BlogPostList({ posts }: BlogPost) {
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {posts.map((post) => (
         <Link key={post.id} href={`/posts/${post.id}`}>
           <Card>
             <CardHeader>
-              <CardTitle>{post.title}</CardTitle>
+              <CardTitle className="line-clamp-1">{post.title}</CardTitle>
             </CardHeader>
             <CardContent>
-             <div>
+              <div className="text-muted-foreground line-clamp">
                 {DOMPurify.sanitize(post.content, {
-                    ALLOWED_TAGS:[]
-                } )}
-             </div>
+                  ALLOWED_TAGS: [],
+                })}
+              </div>
             </CardContent>
             <CardFooter className="text-sm">
               <div className="flex gap-2 items-center">
                 <span>{`${post.author.firstName} ${post.author.lastName}`}</span>
                 <span>.</span>
                 <time dateTime={post.createdAt.toISOString()}>
-                    {formatDate(post.createdAt)}
+                  {formatDate(post.createdAt)}
                 </time>
               </div>
             </CardFooter>
