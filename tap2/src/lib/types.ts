@@ -1,7 +1,7 @@
 export interface CreatePostInput {
   title: string;
   content: string;
-  authorId: string;
+  authorId?: string;
 }
 
 export interface User {

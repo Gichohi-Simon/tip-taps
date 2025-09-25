@@ -54,10 +54,119 @@ export async function getPostById(postId: string) {
         message: "Post not found",
       };
     }
-
+    console.log({ editingPost: post });
     return { success: true, data: post };
   } catch (error) {
     console.log("Database errror:", error);
-    return null
+    return null;
+  }
+}
+
+export async function getPostForEdit(postId: string) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return {
+        success: false,
+        message: "Unauthorized",
+      };
+    }
+
+    const post = await prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        authorId: true,
+      },
+    });
+
+    if (!post) {
+      return {
+        success: false,
+        message: "Post not found",
+      };
+    }
+
+    if (post.authorId !== userId) {
+      return {
+        success: false,
+        message: "Unauthorized",
+      };
+    }
+
+    return {
+      success: true,
+      data: post,
+    };
+  } catch (error) {
+    console.log("Error fetching posts for edit:", error);
+    return {
+      success: false,
+      message: "failed to fetch post",
+    };
+  }
+}
+
+export async function updatePost(postId: string, data: CreatePostInput) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return { 
+        success: false,
+        message: "Unauthorized",
+      };
+    }
+
+    const post = await prisma.post.findUnique({
+      where:{
+        id:postId
+      },
+      select:{
+        authorId:true
+      }
+    })
+
+    if(!post){
+      return {
+        success:false,
+        message:"post not found"
+      }
+    }
+
+    if(post.authorId !== userId){
+      return {
+        success:false,
+        message:"you don't have permission to edit this post"
+      }
+    }
+
+    const updatedPost = await prisma.post.update({
+      where:{
+        id:postId
+      },
+      data:{
+        title:data.title,
+        content:data.content,
+        updatedAt: new Date()
+      }
+    });
+
+    return {
+      success: true,
+      data: updatedPost,
+    };
+
+  } catch (error) {
+    console.log("Error updating post:", error);
+    return {
+      success: false,
+      message: "failed to update post",
+    };
   }
 }
